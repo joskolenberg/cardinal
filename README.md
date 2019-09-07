@@ -6,7 +6,7 @@
 [![License](https://poser.pugx.org/joskolenberg/cardinal/license)](https://packagist.org/packages/joskolenberg/cardinal)
 
 # Cardinal
-Little wrapper object to handle cardinal directions.
+Little wrapper object to handle cardinal/compass directions.
 
 ## Installation
 ```
@@ -38,12 +38,12 @@ Cardinal::make('South-West')->degrees // => 225
 Cardinal::make('West NorthWest')->degrees // => 292.5
 ```
 
-Use ```formatLocalized()``` to get localized string
+Use ```formatLocalized()``` to get localized string.
 ```php
 Cardinal::make(250)->formatLocalized(3, true, '-') // => 'West-South-West'
 ```
 
-Override ```lang()``` to create your own localization
+Override ```lang()``` to create your own localization.
 ```php
 use JosKolenberg\Cardinal\Cardinal;
 
