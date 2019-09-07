@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class CardinalTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -29,27 +28,9 @@ class CardinalTest extends TestCase
             '359.999' => 'N',
         ];
 
-        foreach ($cases as $degrees => $result){
+        foreach ($cases as $degrees => $result) {
             $cardinal = Cardinal::make($degrees);
             $this->assertEquals($result, $cardinal->format(1));
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_convert_a_single_precision_string_to_degrees()
-    {
-        $cases = [
-            'N' => 0,
-            'E' => 90,
-            'S' => 180,
-            'W' => 270,
-        ];
-
-        foreach ($cases as $string => $result){
-            $cardinal = Cardinal::make($string);
-            $this->assertEquals($result, $cardinal->degrees);
         }
     }
 
@@ -86,27 +67,9 @@ class CardinalTest extends TestCase
             '359.999' => 'N',
         ];
 
-        foreach ($cases as $degrees => $result){
+        foreach ($cases as $degrees => $result) {
             $cardinal = Cardinal::make($degrees);
             $this->assertEquals($result, $cardinal->format(2));
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_convert_a_double_precision_string_to_degrees()
-    {
-        $cases = [
-            'NE' => 45,
-            'SE' => 135,
-            'SW' => 225,
-            'NW' => 315,
-        ];
-
-        foreach ($cases as $string => $result){
-            $cardinal = Cardinal::make($string);
-            $this->assertEquals($result, $cardinal->degrees);
         }
     }
 
@@ -167,7 +130,7 @@ class CardinalTest extends TestCase
             '359.999' => 'N',
         ];
 
-        foreach ($cases as $degrees => $result){
+        foreach ($cases as $degrees => $result) {
             $cardinal = Cardinal::make($degrees);
             $this->assertEquals($result, $cardinal->format(3));
         }
@@ -176,22 +139,137 @@ class CardinalTest extends TestCase
     /**
      * @test
      */
-    public function it_can_convert_a_triple_precision_string_to_degrees()
+    public function it_can_convert_a_string_into_degrees()
     {
         $cases = [
+            'N' => 0,
             'NNE' => 22.5,
+            'NE' => 45,
             'ENE' => 67.5,
+            'E' => 90,
             'ESE' => 112.5,
+            'SE' => 135,
             'SSE' => 157.5,
+            'S' => 180,
             'SSW' => 202.5,
+            'SW' => 225,
             'WSW' => 247.5,
+            'W' => 270,
             'WNW' => 292.5,
+            'NW' => 315,
             'NNW' => 337.5,
         ];
 
-        foreach ($cases as $string => $result){
+        foreach ($cases as $string => $result) {
             $cardinal = Cardinal::make($string);
-            $this->assertEquals($result, $cardinal->degrees);
+            $this->assertEquals($result, $cardinal->degrees());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_convert_a_fully_written_string_into_degrees()
+    {
+        $cases = [
+            'North' => 0,
+            'North-North-East' => 22.5,
+            'NORTH East' => 45,
+            'East--North-East' => 67.5,
+            'East' => 90,
+            'EastSouth-East' => 112.5,
+            'South-East' => 135,
+            'South South East' => 157.5,
+            'South' => 180,
+            'South-south-West' => 202.5,
+            'South=West' => 225,
+            'West-South-West' => 247.5,
+            'West' => 270,
+            'West-North-West' => 292.5,
+            'North-West' => 315,
+            'North-North-West' => 337.5,
+        ];
+
+        foreach ($cases as $string => $result) {
+            $cardinal = Cardinal::make($string);
+            $this->assertEquals($result, $cardinal->degrees());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_a_getter_for_degrees()
+    {
+        $cardinal = Cardinal::make('NNE');
+        $this->assertEquals(22.5, $cardinal->degrees);
+    }
+
+    /** @test */
+    public function it_can_format_into_fully_written_directions()
+    {
+        $cardinal = Cardinal::make(68);
+        $this->assertEquals('EAST', $cardinal->format(1, true));
+
+        $cardinal = Cardinal::make(269);
+        $this->assertEquals('WEST', $cardinal->format(2, true));
+        $cardinal = Cardinal::make(245);
+        $this->assertEquals('SOUTHWEST', $cardinal->format(2, true));
+
+        $cardinal = Cardinal::make(359);
+        $this->assertEquals('NORTH', $cardinal->format(3, true));
+        $cardinal = Cardinal::make(130);
+        $this->assertEquals('SOUTHEAST', $cardinal->format(3, true));
+        $cardinal = Cardinal::make(23);
+        $this->assertEquals('NORTHNORTHEAST', $cardinal->format(3, true));
+    }
+
+    /** @test */
+    public function it_can_apply_a_custom_divider()
+    {
+        $cardinal = Cardinal::make(68);
+        $this->assertEquals('EAST', $cardinal->format(1, true, '-'));
+
+        $cardinal = Cardinal::make(269);
+        $this->assertEquals('WEST', $cardinal->format(2, true, '-'));
+        $cardinal = Cardinal::make(245);
+        $this->assertEquals('SOUTH-WEST', $cardinal->format(2, true, '-'));
+
+        $cardinal = Cardinal::make(359);
+        $this->assertEquals('NORTH', $cardinal->format(3, true, '-'));
+        $cardinal = Cardinal::make(130);
+        $this->assertEquals('SOUTH-EAST', $cardinal->format(3, true, '-'));
+        $cardinal = Cardinal::make(23);
+        $this->assertEquals('NORTH-NORTH-EAST', $cardinal->format(3, true, '-'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_the_fully_written_direction_when_casted_to_a_string()
+    {
+        $cardinal = Cardinal::make(315);
+        $this->assertEquals('NORTH-WEST', (string) $cardinal);
+    }
+
+
+    /** @test */
+    public function it_can_render_a_localized_string()
+    {
+        $cardinal = Cardinal::make(68);
+        $this->assertEquals('East', $cardinal->formatLocalized(1, true));
+
+        $cardinal = Cardinal::make(269);
+        $this->assertEquals('West', $cardinal->formatLocalized(2, true));
+        $cardinal = Cardinal::make(245);
+        $this->assertEquals('South-West', $cardinal->formatLocalized(2, true, '-'));
+
+        $cardinal = Cardinal::make(359);
+        $this->assertEquals('North', $cardinal->formatLocalized(3, true));
+        $cardinal = Cardinal::make(130);
+        $this->assertEquals('South-East', $cardinal->formatLocalized(3, true, '-'));
+        $cardinal = Cardinal::make(23);
+        $this->assertEquals('North North East', $cardinal->formatLocalized(3, true, ' '));
+
     }
 }
