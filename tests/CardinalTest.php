@@ -1,6 +1,6 @@
 <?php
 
-namespace JosKolenberg\Jory\Tests;
+namespace JosKolenberg\Cardinal\Tests;
 
 use JosKolenberg\Cardinal\Cardinal;
 use PHPUnit\Framework\TestCase;

@@ -1,8 +1,7 @@
 <?php
 
-namespace JosKolenberg\Jory\Tests;
+namespace JosKolenberg\Cardinal\Tests;
 
-use JosKolenberg\Cardinal\Cardinal;
 use JosKolenberg\Cardinal\Tests\Extended\DutchCardinal;
 use PHPUnit\Framework\TestCase;
 
